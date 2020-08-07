@@ -30,7 +30,7 @@ Examples
 ```
 Install via ansible galaxy:
 ```bash
-ansible-galaxy install gsvitins.ansible-fusuma
+ansible-galaxy install gsvitins.ansible_fusuma
 ```
 License
 -------
