@@ -1,0 +1,92 @@
+---
+- name: add current user to input group
+  user:
+    name: "{{ ansible_user_id }}"
+    groups: input
+    append: yes
+  become: yes
+  tags:
+    - ansible-fusuma
+    - install
+
+- name: install packages required for fusuma
+  package:
+    name: "{{ item }}"
+  with_items: "{{ fusuma_packages }}"
+  become: yes
+  tags:
+    - ansible-fusuma
+    - install
+
+- name: install fusuma ruby gem
+  gem:
+    name: fusuma
+    state: present
+  become: yes
+  tags:
+    - ansible-fusuma
+    - install
+
+- name: ensure touchpad events are sent to gnome
+  command: gsettings set org.gnome.desktop.peripherals.touchpad send-events enabled
+  register: result
+  changed_when: result.rc == 0
+  tags:
+    - ansible-fusuma
+    - configure
+
+
+- name: create fusuma config dir
+  file:
+    path: "{{ fusuma_config_dir }}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: 0755
+  tags:
+    - ansible-fusuma
+    - configure
+
+- name: copy fusuma config
+  copy:
+    src: "{{ fusuma_config }}"
+    dest: "{{ fusuma_config_dir }}/{{ fusuma_config }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: 0644
+  notify: restart fusuma
+  tags:
+    - ansible-fusuma
+    - configure
+
+- name: install fusuma systemd service file
+  template:
+    src: fusuma.service.j2
+    dest: "{{ fusuma_service_file }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - daemon reload
+    - restart fusuma
+  become: yes
+  tags:
+    - ansible-fusuma
+    - systemd
+
+- name: start fusuma service
+  systemd:
+    name: fusuma
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+  tags:
+    - ansible-fusuma
+    - systemd
+
+- debug:
+    msg: "Remember to reboot your laptop if it's first time you install this."
+  tags:
+    - ansible-fusuma
+    - debug

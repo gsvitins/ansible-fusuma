@@ -1,0 +1,15 @@
+[Unit]
+Description=Fusuma touchpad gestures
+
+[Service]
+Type=simple
+Environment="DISPLAY=:0"
+ExecStart={{ fusuma_binary }}
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+User={{ ansible_user_id }}
+Group={{ ansible_user_id }}
+
+[Install]
+WantedBy=graphical.target

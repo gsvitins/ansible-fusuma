@@ -1,0 +1,9 @@
+---
+fusuma_packages:
+  - libinput-tools
+  - ruby
+  - xdotool
+fusuma_config_dir: "~/.config/fusuma"
+fusuma_config: "config.yml"
+fusuma_binary: "/usr/local/bin/fusuma"
+fusuma_service_file: "/etc/systemd/system/fusuma.service"
