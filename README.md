@@ -13,6 +13,7 @@ Role variables
 fusuma_packages:
   - libinput-tools
   - ruby
+  - ruby-dev
   - xdotool
 fusuma_config_dir: "~/.config/fusuma"
 fusuma_config: "config.yml"
