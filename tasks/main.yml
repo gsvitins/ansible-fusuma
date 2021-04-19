@@ -22,6 +22,7 @@
   gem:
     name: fusuma
     state: present
+    user_install: no
   become: yes
   tags:
     - ansible-fusuma
